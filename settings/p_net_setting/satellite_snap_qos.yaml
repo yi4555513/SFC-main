@@ -1,0 +1,70 @@
+﻿topology:
+  num_nodes: 66
+  type: waxman
+  wm_alpha: 0.5
+  wm_beta: 0.2
+  file_path: datasets/topology/snapshots
+  num_snapshots: 10
+  cycle_snapshots: true
+  planes: 6
+  nums_per_plane: 11
+node_attrs_setting:
+- name: cpu
+  type: resource
+  owner: node
+  distribution: uniform
+  dtype: int
+  generative: true
+  high: 150
+  low: 100
+- name: max_cpu
+  type: extrema
+  owner: node
+  originator: cpu
+- name: ram
+  type: resource
+  owner: node
+  distribution: uniform
+  dtype: int
+  generative: true
+  high: 200
+  low: 100
+- name: max_ram
+  type: extrema
+  owner: node
+  originator: ram
+link_attrs_setting:
+- name: bw
+  type: resource
+  owner: link
+  distribution: uniform
+  dtype: int
+  generative: true
+  high: 200
+  low: 150
+- name: max_bw
+  type: extrema
+  owner: link
+  originator: bw
+- name: ltc
+  owner: link
+  type: latency
+  generative: false
+  distribution: customized
+  max: 10.0
+  min: 0.0
+- name: loss
+  type: information
+  owner: link
+  distribution: uniform
+  dtype: float
+  generative: true
+  # ????????????????????????????????????
+  # ????? prod(1-loss_e) ??????RSS ??? 0.990?
+  low: 0.0001
+  high: 0.0010
+output:
+  save_dir: dataset/p_net_qos
+  file_name: p_net.gml
+
+

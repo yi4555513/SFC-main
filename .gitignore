@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+*.pkl
+*.pt
+*.pth
+
+# Generated simulation data and outputs
+dataset/
+results/
+outputs/
+virne_ch3/
+virne_ch4/
+runs/
+logs/
+*.csv
+
+# Generated topology snapshots. Keep the directory via .gitkeep.
+datasets/topology/snapshots/*.gml
+TLE/theory/Satellite_Data/*.txt
+
+# Local IDE/system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

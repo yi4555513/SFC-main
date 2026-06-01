@@ -1,0 +1,152 @@
+﻿num_v_nets: 1000
+# Optional: physical topology snapshot duration. 100000 ms = 100 seconds.
+snapshot_duration_ms: 100000
+auto_num_v_nets_from_arrival_rate: false
+topology:
+  type: path
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 4
+  high: 8
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.004
+  reciprocal: true
+lifetime:
+  distribution: uniform
+  dtype: int
+  low: 2000
+  high: 4000
+max_latency:
+  distribution: uniform
+  dtype: float
+  low: 100
+  high: 300
+node_attrs_setting:
+- name: cpu
+  distribution: uniform
+  dtype: int
+  generative: true
+  low: 10
+  high: 15
+  owner: node
+  type: resource
+- name: ram
+  distribution: uniform
+  dtype: int
+  generative: true
+  low: 10
+  high: 20
+  owner: node
+  type: resource
+- name: v_type
+  distribution: uniform
+  dtype: int
+  low: 1
+  high: 10
+  owner: node
+  generative: true
+  type: vnf_type
+link_attrs_setting:
+- name: bw
+  distribution: uniform
+  dtype: int
+  generative: true
+  low: 15
+  high: 20
+  owner: link
+  type: resource
+graph_attrs_setting: null
+output:
+  save_dir: dataset/v_nets_qos
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml
+service_qos:
+  enabled: true
+  enforce_thresholds: true
+  # Chapter 4 studies service-dominant QoS. Use the current service's dominant
+  # dimension as the hard admission threshold; the other dimensions still enter
+  # qos_score/reward. This avoids making every service dominated by the LSS
+  # latency threshold.
+  enforce_mode: dominant
+  # auto 表示底层路由硬时延上限取 max(原始随机上限, 业务QoS门限)，
+  # 避免把 LSS 业务门限误用成过严硬约束，也不直接统一放宽到 300ms。
+  routing_max_latency: auto
+  # ?????? one-hot??????????????????????? 1?
+  dominant_weight: 0.7
+  default_service_type: delay_sensitive
+  # ?????? LSS:BSS:RSS:CSS?
+  service_types:
+  - delay_sensitive
+  - bandwidth_sensitive
+  - reliability_sensitive
+  - compute_sensitive
+  # 第四章均匀业务比例默认口径：LSS:BSS:RSS:CSS = 1:1:1:1。
+  service_ratios:
+    delay_sensitive: 0.25
+    bandwidth_sensitive: 0.25
+    reliability_sensitive: 0.25
+    compute_sensitive: 0.25
+  exact_ratio: true
+  # ?????????mu=kappa*CPU_res, workload=eta*cpu, t=t0+chi*workload/mu?
+  base_processing_delay: 1.0
+  compute_service_rate_factor: 1.0
+  compute_workload_factor: 50.0
+  default_thresholds:
+    max_latency: 300.0
+    min_bandwidth: 15.0
+    min_path_success: 0.95
+    max_compute_delay: 80.0
+  # ???? 4-1 ???????????? SFC ??????????????/???
+  profiles:
+    default:
+      max_latency: [150, 300]
+      min_bandwidth: [15, 25]
+      min_path_success: 0.95
+      vnf_cpu: [10, 15]
+    delay_sensitive:
+      max_latency: [100, 150]
+      min_bandwidth: [15, 25]
+      min_path_success: 0.95
+      vnf_cpu: [10, 15]
+    bandwidth_sensitive:
+      max_latency: [150, 300]
+      min_bandwidth: [25, 40]
+      min_path_success: 0.95
+      vnf_cpu: [10, 15]
+    reliability_sensitive:
+      max_latency: [150, 300]
+      min_bandwidth: [15, 25]
+      min_path_success: 0.99
+      vnf_cpu: [10, 15]
+    compute_sensitive:
+      max_latency: [150, 300]
+      min_bandwidth: [15, 25]
+      min_path_success: 0.95
+      vnf_cpu: [15, 25]
+  thresholds:
+    delay_sensitive:
+      max_latency: 150.0
+      min_bandwidth: 15.0
+      min_path_success: 0.95
+      max_compute_delay: 80.0
+    bandwidth_sensitive:
+      max_latency: 300.0
+      min_bandwidth: 25.0
+      min_path_success: 0.95
+      max_compute_delay: 80.0
+    reliability_sensitive:
+      max_latency: 300.0
+      min_bandwidth: 15.0
+      min_path_success: 0.99
+      max_compute_delay: 80.0
+    compute_sensitive:
+      max_latency: 300.0
+      min_bandwidth: 15.0
+      min_path_success: 0.95
+      max_compute_delay: 80.0
+
