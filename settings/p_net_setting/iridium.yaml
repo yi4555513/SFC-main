@@ -1,0 +1,38 @@
+topology:
+  type: waxman  # 这个类型不重要，因为我们会从文件加载拓扑
+  file_path: 'D:\any download\virne-main\virne-main\TLE\network_snapshots\edge_list_with_dist_1.txt'
+  num_nodes: 100  # 备用参数
+  wm_alpha: 0.5  # 加入
+  wm_beta: 0.2   # 加入
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 100
+    low: 50
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 100
+    low: 50
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: satellite_p_net.gml

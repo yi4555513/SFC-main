@@ -2,7 +2,9 @@ from typing import Optional, Tuple, Any, Dict
 import torch
 import torch.nn as nn
 
-from ..rl_policy import MlpActorCritic
+from virne.solver.learning.rl_policy.gnn_mlp_policy import DeepEdgeFeatureGATActorCritic
+from ..rl_policy import GcnMlpActorCritic, GatMlpActorCritic, MlpActorCritic, CnnActorCritic, AttActorCritic
+from ..rl_policy import BiGcnActorCritic, BiGatActorCritic, BiDeepEdgeFeatureGatActorCritic
 from ..utils import get_pyg_data
 from ..obs_handler import POSITIONAL_EMBEDDING_DIM, P_NODE_STATUS_DIM, V_NODE_STATUS_DIM, V_NET_STATUS_DIM
 from virne.solver.learning.rl_core.tensor_convertor import TensorConvertor

@@ -2,9 +2,10 @@
 import os
 
 import hydra
-from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from TLE.theory.Make_TLE_data import TLEGenerator
+from TLE.theory.multi_snap import generate_multi_snapshot_gml
 from virne.system import BaseSystem
 
 from virne.utils.config import add_simulation_into_config, generate_run_id
@@ -20,8 +21,6 @@ def run(config):
     # Method 3. Modify the config here [Not recommended]
     if config.experiment.run_id == 'auto':
         config.experiment.run_id = generate_run_id()
-    if config.p_net_setting.topology.get('file_path'):
-        config.p_net_setting.topology.file_path = to_absolute_path(config.p_net_setting.topology.file_path)
     add_simulation_into_config(config)
     # --------------------------------------- #
     system = BaseSystem.from_config(config)

@@ -184,27 +184,39 @@ class BaseSystem:
 
     def get_process_bar(self, epoch_id):
         self.pbar = tqdm.tqdm(desc=f'Running with {self.config.solver.solver_name} in epoch {epoch_id}',
-                              total=self.env.v_net_simulator.num_v_nets)
+                              total=self.env.v_net_simulator.num_v_nets,
+                              dynamic_ncols=True)
+
+    def get_resource_util_postfix(self, info):
+        node_util = float(info.get('p_net_node_resource_utilization', 0.0)) * 100
+        link_util = float(info.get('p_net_link_resource_utilization', 0.0)) * 100
+        return {
+            'nU': f'{node_util:4.1f}%',
+            'lU': f'{link_util:4.1f}%'
+        }
 
     def update_process_bar(self, info):
         if self.pbar is not None:
             self.pbar.update(1)
-            self.pbar.set_postfix({
+            postfix = {
                 'ac': f'{info["success_count"] / info["v_net_count"]:1.2f}',
                 'r2c': f'{info["long_term_r2c_ratio"]:1.2f}',
                 'inservice': f'{info["inservice_count"]:05d}',
-
-            })
+            }
+            postfix.update(self.get_resource_util_postfix(info))
+            self.pbar.set_postfix(postfix)
 
     def update_process_bar_new(self, info, avg_latency):
         if self.pbar is not None:
             self.pbar.update(1)
-            self.pbar.set_postfix({
+            postfix = {
                 'ac': f'{info["success_count"] / info["v_net_count"]:1.2f}',
                 'r2c': f'{info["long_term_r2c_ratio"]:1.2f}',
                 'inservice': f'{info["inservice_count"]:05d}',
                 'avg_latency': f'{avg_latency:.2f}'
-            })
+            }
+            postfix.update(self.get_resource_util_postfix(info))
+            self.pbar.set_postfix(postfix)
 
 
 class OnlineSystem(BaseSystem):
@@ -379,7 +391,8 @@ class TimeWindowSystem(BaseSystem):
         for epoch_id in range(self.config.experiment.num_simulations):
             self.logger.info(f'Epoch {epoch_id}')
             pbar = tqdm.tqdm(desc=f'Running with {self.solver.name} in epoch {epoch_id}',
-                             total=self.env.v_net_simulator.num_v_nets)
+                             total=self.env.v_net_simulator.num_v_nets,
+                             dynamic_ncols=True)
             instance = self.env.reset(self.config.experiment.seed)
 
             current_event_id = 0
@@ -407,10 +420,14 @@ class TimeWindowSystem(BaseSystem):
 
                     if pbar is not None:
                         pbar.update(1)
+                        node_util = float(info.get('p_net_node_resource_utilization', 0.0)) * 100
+                        link_util = float(info.get('p_net_link_resource_utilization', 0.0)) * 100
                         pbar.set_postfix({
                             'ac': f'{info["success_count"] / info["v_net_count"]:1.2f}',
                             'r2c': f'{info["long_term_r2c_ratio"]:1.2f}',
                             'inservice': f'{info["inservice_count"]:05d}',
+                            'nU': f'{node_util:4.1f}%',
+                            'lU': f'{link_util:4.1f}%'
                         })
 
                     if done:

@@ -124,6 +124,7 @@ class BaseEnvironment:
 
         for v_net, old_solution in self.cache_list:
             if v_net.arrival_time + v_net.lifetime <= current_time:
+                self.mark_active_solution_released_by_snapshot_reset(v_net, current_time)
                 continue
 
             new_solution = self.reroute_active_solution_on_snapshot(v_net, old_solution, current_time)
@@ -132,7 +133,7 @@ class BaseEnvironment:
                 continue
 
             self.refresh_active_solution_record(v_net, new_solution)
-            if snap_end_time < v_net.arrival_time + v_net.lifetime:
+            if snap_end_time <= v_net.arrival_time + v_net.lifetime:
                 remaining_cache.append((v_net, new_solution))
 
         self.cache_list = remaining_cache
@@ -163,7 +164,7 @@ class BaseEnvironment:
             )
         except Exception as exc:
             self.p_net = before_p_net
-            self.logger.warning(
+            self.logger.debug(
                 f'Snapshot {self.snap_id}: reroute failed for active SFC {getattr(v_net, "id", None)}: {exc}'
             )
             return None
@@ -197,7 +198,7 @@ class BaseEnvironment:
 
     def mark_active_solution_interrupted(self, v_net, solution, current_time: float) -> None:
         """Mark an active SFC as interrupted if it cannot be rerouted on a new snapshot."""
-        self.logger.warning(
+        self.logger.debug(
             f'Snapshot {self.snap_id}: active SFC {getattr(v_net, "id", None)} interrupted because rerouting failed.'
         )
         try:
@@ -221,6 +222,19 @@ class BaseEnvironment:
         except Exception as exc:
             self.logger.warning(f'Failed to mark active SFC interruption: {exc}')
 
+    def mark_active_solution_released_by_snapshot_reset(self, v_net, current_time: float) -> None:
+        """Mark an expired cached SFC so its leave event will not release resources twice."""
+        try:
+            event_id = self.recorder.v_net_event_dict.get(v_net.id)
+            if event_id is None:
+                return
+            record = self.recorder.memory[int(event_id)]
+            record['snapshot_reset_released'] = True
+            record['snapshot_reset_time'] = current_time
+            record['snapshot_id'] = self.snap_id
+        except Exception as exc:
+            self.logger.warning(f'Failed to mark expired cached SFC after snapshot reset: {exc}')
+
     # TODO 璋冭瘯
     def save_snapshot_to_gml(self, p_net, snap_id: int) -> None:
         """
@@ -241,8 +255,8 @@ class BaseEnvironment:
     # TODO
     def cache_not_expire(self, v_net, solution):
         snap_end_time = (self.snapshot_index + 1) * self.snapshot_duration
-        if v_net.arrival_time < snap_end_time < v_net.arrival_time + v_net.lifetime:
-            self.cache_list.append((v_net, solution))
+        if v_net.arrival_time < snap_end_time <= v_net.arrival_time + v_net.lifetime:
+            self.cache_list.append((v_net, copy.deepcopy(solution)))
 
     def ready(self, event_id: int = 0) -> None:
         """
@@ -338,7 +352,8 @@ class BaseEnvironment:
         Release the current Virtual Network when it leaves the system.
         """
         solution = self.recorder.get_record(v_net_id=self.v_net.id)
-        self.controller.release(self.v_net, self.p_net, solution)
+        if not solution.get('snapshot_reset_released', False):
+            self.controller.release(self.v_net, self.p_net, solution)
         self.solution['description'] = 'Leave Event'
         apply_service_qos_to_solution(self.config, self.p_net, self.v_net, self.solution)
         record = self.count_and_add_record()
@@ -638,9 +653,8 @@ class SolutionStepEnvironment(BaseEnvironment):
             self.solution['description'] = 'Success'
             total_p_resource_2 = self.counter.calculate_sum_network_resource(self.p_net)
 
-            # TODO 缂撳瓨鍒板垪琛?            self.cache_not_expire(self.v_net, self.solution)
-
             self.controller.deploy(self.v_net, self.p_net, self.solution)
+            self.cache_not_expire(self.v_net, self.solution)
 
             # TODO 璁＄畻鏃跺欢
             # total_latency = self.compute_total_latency(self.solution)

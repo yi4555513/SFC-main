@@ -17,8 +17,8 @@ arrival_rate:
 lifetime:
   distribution: uniform
   dtype: int
-  low: 2000
-  high: 4000
+  low: 4000
+  high: 8000
 max_latency:
   distribution: uniform
   dtype: float

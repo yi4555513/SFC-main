@@ -3,11 +3,16 @@ __pycache__/
 *.pkl
 *.pt
 *.pth
+*.bak*
+*.dryrun.txt
 
 # Generated simulation data and outputs
 dataset/
 results/
 outputs/
+paper_figures/
+paper_outputs/
+overnight_logs/
 virne_ch3/
 virne_ch4/
 runs/
@@ -17,6 +22,12 @@ logs/
 # Generated topology snapshots. Keep the directory via .gitkeep.
 datasets/topology/snapshots/*.gml
 TLE/theory/Satellite_Data/*.txt
+TLE/iridium/*.txt
+TLE/theory/snapshots/
+TLE/theory/*.gml
+TLE/theory/output_file
+TLE/**/network_snapshots/
+plot/plot1/
 
 # Local IDE/system files
 .idea/

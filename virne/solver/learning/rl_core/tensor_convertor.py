@@ -16,6 +16,7 @@ from virne.network import PhysicalNetwork, VirtualNetwork
 from virne.core import Controller, Recorder, Counter, Solution, Logger
 
 from virne.solver import SolverRegistry
+from virne.solver.learning.rl_policy import CnnActorCritic
 from virne.solver.learning.rl_core import JointPRStepInstanceRLEnv, PlaceStepInstanceRLEnv
 from virne.solver.learning.rl_core.rl_solver import PGSolver, A2CSolver, PPOSolver, A3CSolver
 from virne.solver.learning.rl_core.instance_agent import InstanceAgent

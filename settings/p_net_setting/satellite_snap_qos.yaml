@@ -3,7 +3,7 @@
   type: waxman
   wm_alpha: 0.5
   wm_beta: 0.2
-  file_path: datasets/topology/snapshots
+  file_path: D:/any download/virne-main/virne-main/datasets/topology/snapshots
   num_snapshots: 10
   cycle_snapshots: true
   planes: 6
