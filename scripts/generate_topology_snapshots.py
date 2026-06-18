@@ -86,6 +86,7 @@ def main():
         tle_file,
         output_dir=output_dir,
         p_net_setting=p_net_setting,
+        v_sim_setting=v_sim_setting,
         num_snapshots=num_snapshots,
         time_interval_seconds=interval_seconds,
         max_satellites=args.max_satellites,

@@ -64,10 +64,12 @@ class SatelliteTracker:
 
 # 修改后的 SatelliteGraph 类
 class SatelliteGraph:
-    def __init__(self):
-        self.fixed_node_attrs = {}  # 缓存节点属性
-        self.fixed_edge_attrs = {}  # 缓存边属性
-        self.fixed_edges = None  # 缓存边集
+    def __init__(self, p_net_setting=None, v_sim_setting=None):
+        self.fixed_node_attrs = {}  # fixed node attributes
+        self.fixed_edge_attrs = {}  # fixed edge attributes
+        self.fixed_edges = None  # fixed edge set
+        self.p_net_setting = p_net_setting
+        self.v_sim_setting = v_sim_setting
 
     def _distance(self, pos1, pos2):
         return sum((a - b) ** 2 for a, b in zip(pos1, pos2)) ** 0.5
@@ -91,11 +93,15 @@ class SatelliteGraph:
         graph = nx.Graph()
         graph.add_nodes_from(satellite_dict.keys())
 
-        import yaml
-        with open(r'settings\p_net_setting\satellite_snap.yaml', 'r') as f:
-            config = yaml.safe_load(f)
-        with open(r'settings\v_sim_setting\satellite.yaml', 'r', encoding='utf-8') as f:
-            config2 = yaml.safe_load(f)
+        if self.p_net_setting is None or self.v_sim_setting is None:
+            import yaml
+            with open(r'settings\p_net_setting\satellite_snap.yaml', 'r') as f:
+                config = yaml.safe_load(f)
+            with open(r'settings\v_sim_setting\satellite.yaml', 'r', encoding='utf-8') as f:
+                config2 = yaml.safe_load(f)
+        else:
+            config = self.p_net_setting
+            config2 = self.v_sim_setting
         num_snapshots = config['topology']['num_snapshots'] # 总快照数量
         snapshot_duration = config2['num_v_nets'] / (
                 1000 * num_snapshots * config2['arrival_rate']['lam'])  # 单位 s
@@ -247,7 +253,8 @@ def custom_stringizer(value):
 
 # 修改后的生成多快照函数
 def generate_multi_snapshot_gml(tle_filepath, output_dir="snapshots", num_snapshots=10, time_interval_seconds=10,
-                                max_satellites=None):
+                                max_satellites=None, p_net_setting=None, v_sim_setting=None,
+                                distance_threshold=10000):
     """
     生成多个时间快照的 GML 文件，节点属性和链路带宽固定，distance 和 ltc 随时间变化。
 
@@ -262,12 +269,12 @@ def generate_multi_snapshot_gml(tle_filepath, output_dir="snapshots", num_snapsh
     ts = load.timescale()
     start_time = ts.utc(2023, 5, 1)
     tracker = SatelliteTracker(tle_filepath, max_satellites=max_satellites)
-    graph_builder = SatelliteGraph()
+    graph_builder = SatelliteGraph(p_net_setting=p_net_setting, v_sim_setting=v_sim_setting)
 
     for i in range(num_snapshots):
         current_time = ts.utc(start_time.utc_datetime() + timedelta(seconds=i * time_interval_seconds))
         graph = graph_builder.build_graph_with_fixed_edges(tracker, current_time, pole=True,
-                                                           distance_threshold=10000, snapshot_index=i)
+                                                           distance_threshold=distance_threshold, snapshot_index=i)
 
         # 调试信息
         # print(f"t{i} sample node attributes:", graph.nodes[list(graph.nodes)[0]])
@@ -282,13 +289,6 @@ def generate_multi_snapshot_gml(tle_filepath, output_dir="snapshots", num_snapsh
         # print(f"t{i} loaded node attributes:", G.nodes[list(G.nodes)[0]])
         # print(f"t{i} loaded edge attributes:", G.edges[list(G.edges)[0]] if G.edges else "No edges")
         # print(f"Generated snapshot {i} at {current_time.utc_iso()} to {output_gml}")
-        import shutil
-        copy_dir = r'datasets\topology\snapshots'
-        # 如果指定了复制目录，则将 GML 文件复制过去
-        if copy_dir:
-            os.makedirs(copy_dir, exist_ok=True)
-            shutil.copy(output_gml, copy_dir)
-            # print(f"Copied {output_gml} to {copy_dir}")
 
 if __name__ == "__main__":
     import yaml

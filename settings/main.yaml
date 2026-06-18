@@ -8,6 +8,7 @@ hydra:
     dir: ./results
   job:
     name: main
+    chdir: false
 output_subdir: null
 
 
@@ -18,7 +19,7 @@ experiment:
   seed: 0
   run_id: auto  # if auto: hostname-datatime
   num_simulations: 1
-  save_root_dir: virne_ch4/
+  save_root_dir: results/main_ch4/
   if_save_config: true 
   if_save_p_net: true
   if_save_v_nets: true

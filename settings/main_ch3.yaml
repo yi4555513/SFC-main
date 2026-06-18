@@ -1,4 +1,4 @@
-﻿defaults:
+defaults:
   - learning
   - v_sim_setting/satellite
   - p_net_setting/satellite_snap
@@ -8,13 +8,14 @@ hydra:
     dir: ./results
   job:
     name: main
+    chdir: false
 output_subdir: null
 
 experiment:
   seed: 0
   run_id: auto
   num_simulations: 1
-  save_root_dir: virne_ch3/
+  save_root_dir: results/main_ch3/
   if_save_config: true
   if_save_p_net: true
   if_save_v_nets: true
