@@ -1,246 +1,99 @@
-<div align="center">
-<img src="resources/figures/virne-logo-text.png" width="200px"
-     alt="Virne Logo"
- /> 
-</div>
-<div align="center">
-<h2 align="center">A Comprehensive Simulator & Benchmark for NFV-RA</h2>
-</div>
+﻿# 低轨卫星网络中服务功能链部署与路由联合优化
 
-<div align="center">
-<a href="https://deepwiki.com/GeminiLight/virne"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-<img src="https://img.shields.io/badge/version-1.0.0-blue" /> 
-<img src="https://img.shields.io/pypi/v/virne?label=pypi" />
-<img src="https://img.shields.io/badge/license-Apache--2.0-green" />
-</div>
-<div align="center">
+本仓库为硕士论文实验代码，主要用于低轨卫星网络（LEO Satellite Network）场景下的服务功能链（Service Function Chain, SFC）部署与路由联合优化仿真。代码在 Virne 仿真框架基础上进行扩展，面向动态卫星拓扑、节点资源约束、链路带宽约束、端到端时延约束以及多业务 QoS 需求，构建 SFC 在线部署实验环境，并实现多种对比算法和绘图脚本。
 
-</div>
+## 研究内容
 
+本项目主要包含两部分实验：
 
-<p align="center">
-  <a href="resources/pdfs/virne_benchmark_paper.pdf">✨ Benchmark Paper</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="https://virne.readthedocs.io">Documentation</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="https://github.com/GeminiLight/virne?tab=readme-ov-file#citations">Citations</a> &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="https://github.com/GeminiLight/sdn-nfv-papers">SDN-NFV Papers</a>
-</p>
+1. **不区分业务类型的 SFC 部署与路由联合优化**  
+   面向单业务 SFC 请求，综合考虑卫星节点 CPU/RAM 资源、星间链路带宽、链路时延和动态拓扑快照，比较不同算法在请求接受率、平均端到端时延、收益成本比和运行时间等指标上的性能。
 
+2. **区分业务类型的多业务 SFC 部署与路由联合优化**  
+   面向时延敏感型、带宽密集型、可靠保障型和计算密集型四类业务，引入差异化 QoS 指标，包括端到端时延、有效带宽、路径传输成功率和计算时延，用于分析算法在多业务场景下的适应能力。
 
---------------------------------------------------------------------------------
+## 主要算法
 
-**Virne** is a simulator and benchmark designed to address **resource allocation (RA) problems in network function virtualization (NFV)**, with a highlight on supporting **reinforcement learning (RL)**-based algorithms.
+仓库中主要涉及以下算法：
 
-> In the literature, RA in NFV is often termed Virtual Network Embedding (VNE), Virtual Network Function (VNF) placement, service function chain (SFC) deployment, or network slicing in 5G.
+- **MIP**：混合整数规划方法，用作精确优化基线；
+- **ACO-META**：基于蚁群思想的元启发式算法；
+- **PPO-Baseline / PPO-MLP+**：基于 PPO 的基础强化学习算法；
+- **PPO-MGT**：本文提出的融合 Transformer 与多跳图注意力网络的 PPO 方法。
 
-Virne offers a unified and comprehensive framework for NFV-RA, with the following key features:
+## 目录说明
 
-* 1️⃣ **Highly Customizable Simulations**: Simulates diverse network environments (e.g., cloud, edge, 5G), with user-defined topologies, resources, and service requirements.
-* 2️⃣ **Extensive Algorithm Suite**: Implements 30+ NFV-RA algorithms (including exact, heuristics, meta-heuristics, and RL-based methods) in a modular, extensible architecture.
-* 3️⃣ **Reinforcement Learning Support**: Provides standardized RL pipelines and Gym-style environments for rapid development and benchmarking of RL-based solutions.
-* 4️⃣ **In-depth Evaluation Aspects**: Enables insightful analysis beyond effectiveness, covering multiple practicality perspectives (e.g., solvability, generalization, and scalability).
-
-> [!IMPORTANT]
-> 🎉 We have released the [benchmark paper of Virne](resources/pdfs/virne_benchmark_paper.pdf). Welcome to check it out!
->
-> ✨ If you have any questions, please open a new issue or contact me via email (wtfly2018@gmail.com)
-
-![](resources/figures/virne-architecture.png)
-
-### Citations
-
-> ❤️ If you find Virne helpful to your research, please feel free to cite our related papers.
-
-#### Benchmark Paper
-
-**[arXiv, 2025] Virne**
-
-```bibtex
-@article{tfwang-2025-virne,
-  title={Virne: A Comprehensive Benchmark for Deep RL-based Network Resource Allocation in NFV},
-  author={Wang, Tianfu and Deng, Liwei and Chen, Xi and Wang, Junyang and He, Huiguo and Ding, Leilei and Wu, Wei and Fan, Qilin and Xiong, Hui},
-  year={2025},
-}
+```text
+.
+├── main.py                         # 仿真主入口
+├── settings/                       # 第三章、第四章实验配置文件
+├── virne/                          # 核心仿真环境、求解器和算法实现
+├── scripts/                        # 实验运行脚本与绘图脚本
+├── plot/                           # 论文图像绘制脚本
+├── TLE/                            # 卫星拓扑与快照生成相关代码
+└── datasets/                       # 拓扑数据目录
 ```
 
-#### Algorithmic Papers
+说明：实验结果、模型文件、日志文件和论文图片未上传到 GitHub，避免仓库体积过大。相关目录如 `results/`、`outputs/`、`paper_figures/` 等已在 `.gitignore` 中忽略。
 
-**[IJCAI, 2024] FlagVNE** ([paper](https://arxiv.org/pdf/2404.12633) & [code](https://github.com/GeminiLight/flag-vne))
+## 运行环境
 
-```bibtex
-@INPROCEEDINGS{ijcai-2024-flagvne,
-  title={FlagVNE: A Flexible and Generalizable Reinforcement Learning Framework for Network Resource Allocation},
-  author={Wang, Tianfu and Fan, Qilin and Wang, Chao and Ding, Leilei and Yuan, Nicholas Jing and Xiong, Hui},
-  booktitle={Proceedings of the 33rd International Joint Conference on Artificial Intelligence},
-  year={2024},
-}
-```
-
-**[TSC, 2023] HRL-ACRA** ([paper](https://arxiv.org/pdf/2406.17334) & [code](https://github.com/GeminiLight/hrl-acra))
-
-```bibtex
-@ARTICLE{tsc-2023-hrl-acra,
-  author={Wang, Tianfu and Shen, Li and Fan, Qilin and Xu, Tong and Liu, Tongliang and Xiong, Hui},
-  journal={IEEE Transactions on Services Computing},
-  title={Joint Admission Control and Resource Allocation of Virtual Network Embedding Via Hierarchical Deep Reinforcement Learning},
-  volume={17},
-  number={03},
-  pages={1001--1015},
-  year={2024},
-}
-```
-
-**[ICC, 2021] DRL-SFCP** ([paper](https://ieeexplore.ieee.org/document/9500964) & [code](https://github.com/GeminiLight/drl-sfcp))
-
-```bibtex
-@INPROCEEDINGS{icc-2021-drl-sfcp,
-  author={Wang, Tianfu and Fan, Qilin and Li, Xiuhua and Zhang, Xu and Xiong, Qingyu and Fu, Shu and Gao, Min},
-  booktitle={ICC 2021 - IEEE International Conference on Communications}, 
-  title={DRL-SFCP: Adaptive Service Function Chains Placement with Deep Reinforcement Learning}, 
-  year={2021},
-  pages={1-6},
-}
-```
-
-### Table of Contents
-
-- [Quick Start](#quick-start)
-  - [Installation](#installation)
-  - [Running Examples](#running-examples)
-- [Implemented Algorithms](#implemented-algorithms)
-  - [Exact Algorithms](#exact-algorithms)
-  - [Heuristic Algorithms](#heuristic-algorithms)
-  - [Meta-Heuristic Algorithms](#meta-heuristic-algorithms)
-  - [Learning-Based Algorithms](#learning-based-algorithms)
-
-## Quick Start
-
-### Installation
-
-1. Create a new conda environment
+建议使用 Python 3.10，并根据本地环境安装依赖。可参考：
 
 ```bash
-conda create -n virne python=3.10
-conda activate virne
+pip install -r requirements.txt
 ```
 
-2. Install with script
+如果使用 Conda，可先创建独立环境：
 
 ```bash
-# use cpu
-bash install.sh -c 0
-
-# use cuda (only support cuda=12.4 and torch=2.6.0)
-bash install.sh -c 12.4
+conda create -n sfc-leo python=3.10
+conda activate sfc-leo
+pip install -r requirements.txt
 ```
 
-### Running Examples
+## 运行示例
 
-1. Run the default example
+### 第三章实验
 
-Before running the example, you could update the configuration file in `settings/` directory to set the parameters on simulation and algorithm.
+运行第三章基础实验或负载实验时，可使用 `settings/main_ch3.yaml` 作为配置入口，例如：
 
 ```bash
-python main.py
+python main.py --config-name main_ch3 solver.solver_name=ppo_gat_seq2seq+
 ```
 
-
-2. Run with custom configuration
-
-
-Virne is built on [Hydra](https://hydra.cc/), which allows you to override configuration parameters directly from the command line.
+常用绘图命令示例：
 
 ```bash
-python main.py CONFIG_NAME=NEW_VALUE
+python scripts/plot_ch3_final_figures.py --section basic --basic-preview-mip
+python scripts/plot_ch3_final_figures.py --section reward
+python scripts/plot_ch3_final_figures.py --section load
 ```
 
-Some examples of command line arguments are:
+### 第四章实验
+
+运行第四章多业务实验时，可使用 `settings/main_ch4.yaml` 作为配置入口，例如：
 
 ```bash
-# Run with a specific nfv-ra algorithm
-python main.py solver.solver_name=nrm_rank
-
-# Run with a specific physical topology
-python main.py p_net_setting.topology.file_path=../../datasets/topology/Geant.gml
-
-# Run with a specific network system
-python main.py system.if_offline_system=true
+python main.py --config-name main_ch4 solver.solver_name=ppo_gat_seq2seq+
 ```
 
+第四章基础指标绘图示例：
 
-## Implemented Algorithms
+```bash
+python plot/plot_results.py --chapter 4 --only-paper-metrics --algorithms aco_meta,ppo_mlp+,ppo_gat_seq2seq+ --num-v-nets 1000 --arrival-rate 0.016 --snapshot-duration-ms 60000 --num-snapshots 20 --preview-mip --no-show
+```
 
-**Virne** has implemented the rich heuristic-based and learning-based algorithms for NFV-RA. Some of them are listed in the following tables. 
+第四章不同业务比例柱状图绘制示例：
 
-### Learning-based Solvers
+```bash
+python scripts/plot_ch4_dominant_ratio_figures.py --service all --figure-set all --algorithms mip,aco_meta,ppo_mlp+,ppo_gat_seq2seq+ --arrival-rate 0.004 --snapshot-duration-ms 100000 --num-snapshots 10 --ratios 0.25,0.40,0.55,0.70
+```
 
-| Name                           | Command                | Type         | Mapping  | Title                                                        | Publication    | Year | Note |
-| ------------------------------ | ---------------------- | ------------ | ------------------------------------------------------------ | -------------- | ---- | ---- | ------------------------------ |
-| PG-CNN2 | `pg_cnn2` | `learning`   | `two-stage` | [A Virtual Network EmbeddingAlgorithm Based On Double-LayerReinforcement Learning](https://ieeexplore.ieee.org/document/9500964) | The Computer Journal | 2022 |  |
-| A3C-G3C-Seq2Seq* | `a3c_gcn_seq2seq` | `learning` | `joint_pr`   | [DRL-SFCP: Adaptive Service Function Chains Placement with Deep Reinforcement Learning](https://ieeexplore.ieee.org/document/9500964)     | ICC         | 2021 |             |
-| PG-CNN-QoS | `pg_cnn_qos` | `learning`   | `two-stage` | [Resource Management and Security Scheme of ICPSs and IoT Based on VNE Algorithm](https://arxiv.org/pdf/2202.01375.pdf) | IoTJ | 2021 |  |
-| PG-Seq2Seq      | `pg_seq2seq` | `learning`   | `joint_pr` | [A Continuous-Decision Virtual Network Embedding Scheme Relying on Reinforcement Learning](https://ieeexplore.ieee.org/document/8982091) | TNSM   | 2020 |  |
-| GAE-Clustering                    | `gae_clustering`          | `learning`   | `bfs_trials` | [Accelerating Virtual Network Embedding with Graph Neural Networks](https://ieeexplore.ieee.org/document/9269128) | CNSM           | 2020 | Clustering |
-| PG-MLP                | `pg_mlp`   | `learning`   | `joint_pr` | [NFVdeep: adaptive online service function chain deployment with deep reinforcement learning](http://ieeexplore.ieee.org/document/9068634/). | IWQOS          | 2019 |  |
-| Hopfield-Network          | `hopfield_network` | `learning`   | `two-stage` | [NeuroViNE: A Neural Preprocessor for Your Virtual Network Embedding Algorithm](https://mediatum.ub.tum.de/doc/1449121/document.pdf) | INFOCOM   | 2018 | Subgraph Extraction |
-| PG-CNN | `pg_cnn`          | `learning`   | `two-stage` | [A Novel Reinforcement Learning Algorithm for Virtual Network Embedding](https://bura.brunel.ac.uk/bitstream/2438/17673/1/FullText.pdf) | Neurocomputing | 2018 |  |
-| MCTS                   | `mcts`              | `learning`   | `two-stage` | [Virtual Network Embedding via Monte Carlo Tree Search](https://www.researchgate.net/profile/Ljiljana-Trajkovic/publication/313873926_Virtual_Network_Embedding_via_Monte_Carlo_Tree_Search/links/5ac0386945851584fa7404f4/Virtual-Network-Embedding-via-Monte-Carlo-Tree-Search.pdf?_sg%5B0%5D=IbJ7vUDENmXiBbfMTzU7pe38Z0gve9tpmZe8Z0178rNWQVa5y6AFGJksV2UA1gPa2Fiohm7X1HzI-1rdAPT5Jg.Edi8Rb3R7d-SAgZ4Jl6Z-AnccOosuWHRn2EFIt8dcGLqnDdaw8vBfh1mKV-HieWT8lpuArIMwCjnyAg4CflgVw.cWgci1nNGkvx6bRqmirSaRRk-bi80Q0gMjvmyL49gbkiYRuKU6Zu1Aswe4xTxC99BNyBH7dYbFH3YyQTzUJczg&_sg%5B1%5D=XE66L-R7TPh36UxeMPExdBq5KyXxwAikDWvZbhvLjlAdwbBQ3MNiZbmBZzwQ0L1ntkXedGL1rZZYqX6LhuHdgQbg5Xi8I7phGNSAPGvh1OJv.Edi8Rb3R7d-SAgZ4Jl6Z-AnccOosuWHRn2EFIt8dcGLqnDdaw8vBfh1mKV-HieWT8lpuArIMwCjnyAg4CflgVw.cWgci1nNGkvx6bRqmirSaRRk-bi80Q0gMjvmyL49gbkiYRuKU6Zu1Aswe4xTxC99BNyBH7dYbFH3YyQTzUJczg&_iepl=) | TCYB           | 2018 | MultiThreading Support |
+## 说明
 
-> `*` means that the algorithm only supports chain-shape virtual networks embedding
+本仓库主要用于论文实验复现与代码备份。由于训练模型、仿真结果和绘图结果文件较大，仓库仅保留核心代码、配置文件和运行脚本。运行不同实验前，请根据本地路径、预训练模型路径和实验参数修改对应配置或脚本。
 
+## License
 
-### Meta-heuristics Solvers
-
-| Name                           | Command       | Type         | Mapping      | Title                                                        | Publication | Year | Note |
-| ------------------------------ | ------------- | ------------ | ------------ | ------------------------------------------------------------ | ----------- | ---- | ------------------------------ |
-| NodeRanking-MetaHeuristic          | `**_**`         | `meta-heuristics`   | `joint` | [Virtual network embedding through topology awareness and optimization](https://www.sciencedirect.com/science/article/abs/pii/S1389128612000461) | CN         | 2012 | MultiThreading Support |
-| Genetic-Algorithm          | `ga`         | `meta-heuristics`   | `two-stage` | [Virtual network embedding based on modified genetic algorithm](https://link.springer.com/article/10.1007/s12083-017-0609-x#:~:text=Virtual%20network%20embedding%20is%20a,nodes%2C%20the%20goal%20of%20link) | Peer-to-Peer Networking and Applications         | 2019 | MultiThreading Support |
-| Tabu-Search          | `ts`         | `meta-heuristics`   | `joint` | [Virtual network forwarding graph embedding based on Tabu Search](https://ieeexplore.ieee.org/document/8171072) | WCSP         | 2017 | MultiThreading Support |
-| ParticleSwarmOptimization          | `pso`         | `meta-heuristics`   | `two-stage` | [Energy-Aware Virtual Network Embedding](https://ieeexplore.ieee.org/document/6709811) | TON         | 2014 | MultiThreading Support |
-| Ant-Colony-Optimization  | `aco`          | `meta-heuristics` | `joint`     | [Link mapping-oriented ant colony system for virtual network embedding](https://ieeexplore.ieee.org/document/7969445) | CEC         | 2017 | MultiThreading Support |
-| AntColony-Optimization  | `aco`          | `meta-heuristics` | `joint`     | [VNE-AC: Virtual Network Embedding Algorithm Based on Ant Colony Metaheuristic](https://www.gta.ufrj.br/ensino/cpe717-2011/VNE-ICC-1.pdf) | ICC         | 2011 | MultiThreading Support |
-| Simulated-Annealing  | `sa`          | `meta-heuristics` | `two-stage`     | [FELL: A Flexible Virtual Network Embedding Algorithm with Guaranteed Load Balancing](https://ieeexplore.ieee.org/abstract/document/5962960) | ICC         | 2011 | MultiThreading Support |
-
-**Other Related Papers**
-- Particle Swarm Optimization 
-  - Xiang Cheng et al. "Virtual network embedding through topology awareness and optimization". CN, 2012.
-  - An Song et al. "A Constructive Particle Swarm Optimizer for Virtual Network Embedding". TNSE, 2020.
-- Genetic Algorithm
-  - Liu Boyang et al. "Virtual Network Embedding Based on Hybrid Adaptive Genetic Algorithm" In ICCC, 2019.
-  - Khoa T.D. Nguyen et al. "An Intelligent Parallel Algorithm for Online Virtual Network Embedding". In CITS, 2019.
-  - Khoa Nguyen et al. "Efficient Virtual Network Embedding with Node Ranking and Intelligent Link Mapping". In CloudNet, 2020.
-  - Khoa Nguyen et al. "Joint Node-Link Algorithm for Embedding Virtual Networks with Conciliation Strategy". In GLOBECOM, 2021.
-- Ant Colony Optimization
-  - N/A
-
-### Heuristics-based Solvers
-
-| Name                           | Command       | Type         | Mapping      | Title                                                        | Publication | Year | Note |
-| ------------------------------ | ------------- | ------------ | ------------ | ------------------------------------------------------------ | ----------- | ---- | ---- |
-| PL (Priority of Location)      | `pl_rank`     | `heuristics` | `two-stage`  | [Efficient Virtual Network Embedding of Cloud-Based Data Center Networks into Optical Networks](https://ieeexplore.ieee.org/document/9415134) | TPDS        | 2021 |      |
-| NRM (Node Resource Management) | `nrm_rank`    | `heuristics` | `two-stage`  | [Virtual Network Embedding Based on Computing, Network, and Storage Resource Constraints](https://ieeexplore.ieee.org/document/7976281) | IoTJ        | 2018 |      |
-| GRC (Global resource capacity) | `grc_rank`    | `heuristics` | `two-stage`  | [Toward Profit-Seeking Virtual Network Embedding Algorithm via Global Resource Capacity](https://ieeexplore.ieee.org/document/6847918) | INFOCOM     | 2014 |      |
-| RW-MaxMatch (NodeRank)         | `rw_rank`     | `heuristics` | `two-stage`  | [Virtual Network Embedding Through Topology-Aware Node Ranking](https://dl.acm.org/doi/10.1145/1971162.1971168) | ACM SIGCOMM Computer Communication Review     | 2011 |      |
-| RW-BFS (NodeRank)              | `rw_rank_bfs` | `heuristics` | `bfs_trials` | [Virtual Network Embedding Through Topology-Aware Node Ranking](https://dl.acm.org/doi/10.1145/1971162.1971168) | ACM SIGCOMM Computer Communication Review     | 2011 |      |
-
-
-### Exact Solvers
-
-| Name                                 | Command     | Type      | Mapping   | Title                                                                                                                                               | Publication | Year | Note |
-| ------------------------------------ | ----------- | --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---- | ---- |
-| MIP (Mixed-Integer Programming)  | `mip` | `exact` | `joint` | [ViNEYard: Virtual Network Embedding Algorithms With Coordinated Node and Link Mapping](https://ieeexplore.ieee.org/document/5951812?arnumber=5951812) | TON         | 2012 |      |
-| D-Rounding (Deterministic Rounding) | `d_rounding`   | `exact` | `joint` | [ViNEYard: Virtual Network Embedding Algorithms With Coordinated Node and Link Mapping](https://ieeexplore.ieee.org/document/5951812?arnumber=5951812) | TON         | 2012 |      |
-| R-Rounding (Random Rounding)        | `r_rounding`   | `exact` | `joint` | [ViNEYard: Virtual Network Embedding Algorithms With Coordinated Node and Link Mapping](https://ieeexplore.ieee.org/document/5951812?arnumber=5951812) | TON         | 2012 |      |
-
-### Simple Baseline Solvers
-
-| Name                                          | Command             | Mapping      |
-| --------------------------------------------- | ------------------- | ------------ |
-| Random Rank                                   | `random_rank`       | `two-stage`  |
-| Random Joint Place and Route                  | `random_joint_pr`   | `joint_pr`   |
-| Random Rank Breath First Search               | `random_bfs_trials` | `bfs_trials` |
-| Order Rank                                    | `order_rank`        | `two-stage`  |
-| Order Joint Place and Route                   | `order_joint_pr`    | `joint_pr`   |
-| Order Rank Breath First Search                | `order_bfs_trials`  | `bfs_trials` |
-| First Fit Decreasing Rank                     | `ffd_rank`          | `two-stage`  |
-| First Fit Decreasing Joint Place and Route    | `ffd_joint_pr`      | `joint_pr`   |
-| First Fit Decreasing Rank Breath First Search | `ffd_bfs_trials`    | `bfs_trials` |
+本项目基于 Virne 框架进行二次开发，原始框架版权与许可证请参考 Virne 项目说明。本仓库新增代码仅用于学术研究与论文实验复现。
