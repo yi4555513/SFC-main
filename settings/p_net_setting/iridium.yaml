@@ -1,6 +1,6 @@
 topology:
   type: waxman  # 这个类型不重要，因为我们会从文件加载拓扑
-  file_path: 'D:\any download\virne-main\virne-main\TLE\network_snapshots\edge_list_with_dist_1.txt'
+  file_path: 'TLE\network_snapshots\edge_list_with_dist_1.txt'
   num_nodes: 100  # 备用参数
   wm_alpha: 0.5  # 加入
   wm_beta: 0.2   # 加入

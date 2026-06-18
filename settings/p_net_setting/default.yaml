@@ -5,7 +5,7 @@ topology:
   type: waxman             # Topology type: waxman, random, etc.
   wm_alpha: 0.5            # Waxman alpha parameter
   wm_beta: 0.2             # Waxman beta parameter
-  file_path: 'D:/any download/virne-main/virne-main/datasets/topology/snapshots/satellite_graph_t0.gml' # Uncomment to use a specific topology file
+  file_path: 'datasets/topology/snapshots/satellite_graph_t0.gml' # Uncomment to use a specific topology file
 
 node_attrs_setting:
   - name: cpu

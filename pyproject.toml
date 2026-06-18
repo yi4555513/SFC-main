@@ -3,12 +3,12 @@ requires = ["setuptools >= 60.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "virne"
+name = "main"
 version = "1.0.0"
-description = "A comprehensive simulator and benchmark for Resource Allocation in Network Function Virtualization (NFV-RA)."
+description = "Simulation code for SFC deployment and routing in LEO satellite networks."
 readme = "README.md"
 requires-python = ">= 3.10"
-authors = [{ name = "GeminiLight", email = "wtfly2018@gmail.com" }]
+authors = [{ name = "SFC-main" }]
 license = { text = "Apache License, Version 2.0" }
 keywords = ["Network Function Virtualization", "Virtual Network Embedding", "Reinforcement Learning"]
 classifiers = [
@@ -55,10 +55,10 @@ dependencies = [
 dynamic = ["entry-points"]
 
 [project.urls]
-Homepage = "https://github.com/GeminiLight/virne"
-Repository = "https://github.com/GeminiLight/virne"
-Documentation = "https://virne.readthedocs.io"
-"Bug Report" = "https://github.com/GeminiLight/virne/issues"
+Homepage = "https://github.com/yi4555513/SFC-main"
+Repository = "https://github.com/yi4555513/SFC-main"
+Documentation = "https://github.com/yi4555513/SFC-main"
+"Bug Report" = "https://github.com/yi4555513/SFC-main/issues"
 
 [project.optional-dependencies]
 lint = [
@@ -87,7 +87,7 @@ pyg-gpu = [
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["virne", "virne.*"]
+include = ["main", "main.*"]
 
 # Linter tools #################################################################
 
@@ -101,7 +101,7 @@ skip-string-normalization = true
 [tool.isort]
 atomic = true
 profile = "black"
-src_paths = ["virne", "tests"]
+src_paths = ["main", "tests"]
 extra_standard_library = ["typing_extensions"]
 indent = 4
 line_length = 100
@@ -139,7 +139,7 @@ max-line-length = 500
 target-version = "py38"
 line-length = 100
 show-source = true
-src = ["virne", "tests", "examples"]
+src = ["main", "tests", "examples"]
 select = [
     "E", "W",  # pycodestyle
     "F",       # pyflakes

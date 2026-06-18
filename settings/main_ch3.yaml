@@ -7,7 +7,7 @@ hydra:
   run:
     dir: ./results
   job:
-    name: virne
+    name: main
 output_subdir: null
 
 experiment:
@@ -104,7 +104,7 @@ recorder:
 
 logger:
   log_dir_name: logs
-  project_name: 'virne'
+  project_name: 'main'
   experiment_name: chapter3_experiment
   level: INFO
   verbose: 1

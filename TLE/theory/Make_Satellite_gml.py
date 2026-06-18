@@ -135,5 +135,5 @@ def generate_gml(tle_filepath, output_gml="satellite_graph.gml"):
 
 if __name__ == "__main__":
     # 示例：从文件读取TLE数据
-    tle_filepath = r"D:\any download\virne-main\virne-main\TLE\theory\Satellite_Data\60Degree_500_6x11_tles_1.txt"  # 请替换为实际的TLE文件路径
-    generate_gml(tle_filepath, r"D:\any download\virne-main\virne-main\datasets\topology\satellite.gml")
+    tle_filepath = r"TLE\theory\Satellite_Data\60Degree_500_6x11_tles_1.txt"  # 请替换为实际的TLE文件路径
+    generate_gml(tle_filepath, r"datasets\topology\satellite.gml")

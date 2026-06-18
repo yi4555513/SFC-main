@@ -3,7 +3,7 @@ topology:
   type: waxman
   wm_alpha: 0.5
   wm_beta: 0.2
-  file_path: D:/any download/virne-main/virne-main/datasets/topology/snapshots/satellite_graph_t0.gml
+  file_path: datasets/topology/snapshots/satellite_graph_t0.gml
 node_attrs_setting:
 - name: cpu
   type: resource

@@ -7,7 +7,7 @@ hydra:
   run:
     dir: ./results
   job:
-    name: virne
+    name: main
 output_subdir: null
 
 
@@ -99,7 +99,7 @@ recorder:
 logger:
   # actual log dir: <save_root_dir>/<solver_name>/<generated_run_id>/<log_dir>
   log_dir_name: logs
-  project_name: 'virne'
+  project_name: 'main'
   experiment_name: default_experiment
   level: INFO
   verbose: 1

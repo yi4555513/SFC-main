@@ -92,9 +92,9 @@ class SatelliteGraph:
         graph.add_nodes_from(satellite_dict.keys())
 
         import yaml
-        with open(r'D:\any download\virne-main\virne-main\settings\p_net_setting\satellite_snap.yaml', 'r') as f:
+        with open(r'settings\p_net_setting\satellite_snap.yaml', 'r') as f:
             config = yaml.safe_load(f)
-        with open(r'D:\any download\virne-main\virne-main\settings\v_sim_setting\satellite.yaml', 'r', encoding='utf-8') as f:
+        with open(r'settings\v_sim_setting\satellite.yaml', 'r', encoding='utf-8') as f:
             config2 = yaml.safe_load(f)
         num_snapshots = config['topology']['num_snapshots'] # 总快照数量
         snapshot_duration = config2['num_v_nets'] / (
@@ -283,7 +283,7 @@ def generate_multi_snapshot_gml(tle_filepath, output_dir="snapshots", num_snapsh
         # print(f"t{i} loaded edge attributes:", G.edges[list(G.edges)[0]] if G.edges else "No edges")
         # print(f"Generated snapshot {i} at {current_time.utc_iso()} to {output_gml}")
         import shutil
-        copy_dir = r'D:\any download\virne-main\virne-main\datasets\topology\snapshots'
+        copy_dir = r'datasets\topology\snapshots'
         # 如果指定了复制目录，则将 GML 文件复制过去
         if copy_dir:
             os.makedirs(copy_dir, exist_ok=True)
@@ -292,15 +292,15 @@ def generate_multi_snapshot_gml(tle_filepath, output_dir="snapshots", num_snapsh
 
 if __name__ == "__main__":
     import yaml
-    with open(r'D:\any download\virne-main\virne-main\settings\p_net_setting\satellite_snap.yaml', 'r',encoding='utf-8') as f:
+    with open(r'settings\p_net_setting\satellite_snap.yaml', 'r',encoding='utf-8') as f:
         config = yaml.safe_load(f)
     planes = config['topology']['planes']
     nums_per_plane = config['topology']['nums_per_plane']
     print(f"planes:{planes}")
     print(f"nums_per_plane:{nums_per_plane}")
-    tle_filepath = fr"D:\any download\virne-main\virne-main\TLE\theory\Satellite_Data/60Degree_500_{planes}x{nums_per_plane}_tles_1.txt"
+    tle_filepath = fr"TLE\theory\Satellite_Data/60Degree_500_{planes}x{nums_per_plane}_tles_1.txt"
 
-    with open(r'D:\any download\virne-main\virne-main\settings\v_sim_setting\satellite.yaml', 'r',
+    with open(r'settings\v_sim_setting\satellite.yaml', 'r',
               encoding='utf-8') as f:
         config2 = yaml.safe_load(f)
     num_snapshots = config['topology']['num_snapshots']  # 总快照数量

@@ -59,7 +59,7 @@ class TLEGenerator:
         print(f"TLEs written to {os.path.abspath(self.output_file)}")
 
 if __name__ == "__main__":
-    with open(r'D:\any download\virne-main\virne-main\settings\p_net_setting\satellite_snap.yaml', 'r') as f:
+    with open(r'settings\p_net_setting\satellite_snap.yaml', 'r') as f:
         config = yaml.safe_load(f)
     planes = config['topology']['planes']
     nums_per_plane = config['topology']['nums_per_plane']

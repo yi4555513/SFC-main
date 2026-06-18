@@ -132,7 +132,7 @@ if __name__ == '__main__':
     time = ts.utc(2025, 7, 2)  # 使用当前日期
 
     # 加载卫星TLE数据
-    tle_filepath = r"D:\any download\virne-main\virne-main\TLE\theory\Satellite_Data\60Degree_500_12x24_tles_1.txt"  # 替换为实际TLE文件路径
+    tle_filepath = r"TLE\theory\Satellite_Data\60Degree_500_12x24_tles_1.txt"  # 替换为实际TLE文件路径
     tracker = SatelliteTracker(tle_filepath)
 
     # 创建卫星连接图

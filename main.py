@@ -1,4 +1,4 @@
-# os.chdir(os.path.join(os.getcwd(), 'code/virne-dev'))
+# os.chdir(os.getcwd())
 import os
 
 import hydra
@@ -6,9 +6,9 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 
 from TLE.theory.Make_TLE_data import TLEGenerator
 from TLE.theory.multi_snap import generate_multi_snapshot_gml
-from virne.system import BaseSystem
+from main.system import BaseSystem
 
-from virne.utils.config import add_simulation_into_config, generate_run_id
+from main.utils.config import add_simulation_into_config, generate_run_id
 import yaml
 
 @hydra.main(config_path="settings", config_name="main")
