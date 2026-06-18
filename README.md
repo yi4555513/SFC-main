@@ -1,50 +1,41 @@
 ﻿# 低轨卫星网络中服务功能链部署与路由联合优化
 
-本仓库为硕士论文实验代码，主要用于低轨卫星网络（LEO Satellite Network）场景下的服务功能链（Service Function Chain, SFC）部署与路由联合优化仿真。代码在 Virne 仿真框架基础上进行扩展，面向动态卫星拓扑、节点资源约束、链路带宽约束、端到端时延约束以及多业务 QoS 需求，构建 SFC 在线部署实验环境，并实现多种对比算法和绘图脚本。
+本仓库为硕士论文实验代码，主要用于低轨卫星网络（LEO Satellite Network）场景下的服务功能链（Service Function Chain, SFC）部署与路由联合优化仿真。代码在 Virne 仿真框架基础上进行扩展，支持动态卫星拓扑快照、节点资源约束、链路带宽约束、端到端时延约束以及多业务 QoS 需求。
 
-## 研究内容
+## 主要内容
 
-本项目主要包含两部分实验：
+本项目包含两类实验场景：
 
-1. **不区分业务类型的 SFC 部署与路由联合优化**  
-   面向单业务 SFC 请求，综合考虑卫星节点 CPU/RAM 资源、星间链路带宽、链路时延和动态拓扑快照，比较不同算法在请求接受率、平均端到端时延、收益成本比和运行时间等指标上的性能。
+1. **单业务 SFC 部署与路由联合优化**  
+   面向不区分业务类型的 SFC 请求，比较 MIP、ACO-META、PPO-Baseline 和 PPO-MGT 等算法在请求接受率、平均端到端时延、收益成本比和运行时间等指标上的表现。
 
-2. **区分业务类型的多业务 SFC 部署与路由联合优化**  
-   面向时延敏感型、带宽密集型、可靠保障型和计算密集型四类业务，引入差异化 QoS 指标，包括端到端时延、有效带宽、路径传输成功率和计算时延，用于分析算法在多业务场景下的适应能力。
+2. **多业务 SFC 部署与路由联合优化**  
+   面向时延敏感型、带宽密集型、可靠保障型和计算密集型四类业务，引入差异化业务需求，用于验证算法在多业务场景下的部署适应能力。
 
 ## 主要算法
 
-仓库中主要涉及以下算法：
-
-- **MIP**：混合整数规划方法，用作精确优化基线；
-- **ACO-META**：基于蚁群思想的元启发式算法；
+- **MIP**：混合整数规划方法；
+- **ACO-META**：蚁群元启发式算法；
 - **PPO-Baseline / PPO-MLP+**：基于 PPO 的基础强化学习算法；
-- **PPO-MGT**：本文提出的融合 Transformer 与多跳图注意力网络的 PPO 方法。
+- **PPO-MGT**：融合 Transformer 与多跳图注意力网络的 PPO 方法。
 
-## 目录说明
+## 目录结构
 
 ```text
 .
-├── main.py                         # 仿真主入口
-├── settings/                       # 第三章、第四章实验配置文件
-├── virne/                          # 核心仿真环境、求解器和算法实现
-├── scripts/                        # 实验运行脚本与绘图脚本
-├── plot/                           # 论文图像绘制脚本
-├── TLE/                            # 卫星拓扑与快照生成相关代码
-└── datasets/                       # 拓扑数据目录
+├── main.py              # 仿真主入口
+├── settings/            # 实验配置文件
+├── virne/               # 核心环境、控制器、求解器和强化学习算法
+├── scripts/             # 实验运行脚本
+├── TLE/                 # 卫星拓扑与快照生成相关代码
+└── datasets/            # 拓扑数据目录
 ```
 
-说明：实验结果、模型文件、日志文件和论文图片未上传到 GitHub，避免仓库体积过大。相关目录如 `results/`、`outputs/`、`paper_figures/` 等已在 `.gitignore` 中忽略。
+说明：实验结果、模型文件、日志文件和图片文件没有上传到仓库，相关目录如 `results/`、`outputs/`、`paper_figures/`、`overnight_logs/` 等已在 `.gitignore` 中忽略。
 
-## 运行环境
+## 环境配置
 
-建议使用 Python 3.10，并根据本地环境安装依赖。可参考：
-
-```bash
-pip install -r requirements.txt
-```
-
-如果使用 Conda，可先创建独立环境：
+建议使用 Python 3.10。可使用 Conda 创建环境：
 
 ```bash
 conda create -n sfc-leo python=3.10
@@ -52,47 +43,80 @@ conda activate sfc-leo
 pip install -r requirements.txt
 ```
 
-## 运行示例
+## 基本运行方式
 
-### 第三章实验
+项目使用 Hydra 配置系统。第三章实验使用 `main_ch3`，第四章实验使用 `main_ch4`。
 
-运行第三章基础实验或负载实验时，可使用 `settings/main_ch3.yaml` 作为配置入口，例如：
+### 运行第三章单业务实验
+
+PPO-MGT 示例：
 
 ```bash
 python main.py --config-name main_ch3 solver.solver_name=ppo_gat_seq2seq+
 ```
 
-常用绘图命令示例：
+PPO-Baseline 示例：
 
 ```bash
-python scripts/plot_ch3_final_figures.py --section basic --basic-preview-mip
-python scripts/plot_ch3_final_figures.py --section reward
-python scripts/plot_ch3_final_figures.py --section load
+python main.py --config-name main_ch3 solver.solver_name=ppo_mlp+
 ```
 
-### 第四章实验
+ACO-META 示例：
 
-运行第四章多业务实验时，可使用 `settings/main_ch4.yaml` 作为配置入口，例如：
+```bash
+python main.py --config-name main_ch3 solver.solver_name=aco_meta
+```
+
+MIP 示例：
+
+```bash
+python main.py --config-name main_ch3 solver.solver_name=mip
+```
+
+### 运行第四章多业务实验
+
+PPO-MGT 示例：
 
 ```bash
 python main.py --config-name main_ch4 solver.solver_name=ppo_gat_seq2seq+
 ```
 
-第四章基础指标绘图示例：
+PPO-Baseline 示例：
 
 ```bash
-python plot/plot_results.py --chapter 4 --only-paper-metrics --algorithms aco_meta,ppo_mlp+,ppo_gat_seq2seq+ --num-v-nets 1000 --arrival-rate 0.016 --snapshot-duration-ms 60000 --num-snapshots 20 --preview-mip --no-show
+python main.py --config-name main_ch4 solver.solver_name=ppo_mlp+
 ```
 
-第四章不同业务比例柱状图绘制示例：
+ACO-META 示例：
 
 ```bash
-python scripts/plot_ch4_dominant_ratio_figures.py --service all --figure-set all --algorithms mip,aco_meta,ppo_mlp+,ppo_gat_seq2seq+ --arrival-rate 0.004 --snapshot-duration-ms 100000 --num-snapshots 10 --ratios 0.25,0.40,0.55,0.70
+python main.py --config-name main_ch4 solver.solver_name=aco_meta
 ```
 
-## 说明
+MIP 示例：
 
-本仓库主要用于论文实验复现与代码备份。由于训练模型、仿真结果和绘图结果文件较大，仓库仅保留核心代码、配置文件和运行脚本。运行不同实验前，请根据本地路径、预训练模型路径和实验参数修改对应配置或脚本。
+```bash
+python main.py --config-name main_ch4 solver.solver_name=mip
+```
+
+## 常用实验脚本
+
+仓库中的 `scripts/` 目录提供了部分批量实验脚本，例如：
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/run_ch3_load_8_to_72_3alg.ps1
+powershell -ExecutionPolicy Bypass -File scripts/run_ch4_basic_lambda16_3alg.ps1
+powershell -ExecutionPolicy Bypass -File scripts/run_ch4_dominant_ratio_lambda16_200_4alg.ps1
+```
+
+运行前请根据本地路径和模型位置检查脚本中的参数，尤其是 Python 环境路径、预训练模型路径、SFC 数量、到达率、快照间隔和快照数量等设置。
+
+## 注意事项
+
+- 本仓库仅保留运行实验所需代码和配置，不包含实验结果和训练模型。
+- 若使用预训练模型测试 PPO 类算法，需要在命令或脚本中指定 `solver.pretrained_model_path`。
+- 若重新训练 PPO 类算法，可调整 `training.num_train_epochs` 等训练参数。
+- 运行 MIP 时可根据机器性能设置求解时间限制，例如 `solver.mip_time_limit_seconds`。
 
 ## License
 
