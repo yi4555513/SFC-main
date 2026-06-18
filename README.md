@@ -26,7 +26,7 @@
 ├── main.py              # 仿真主入口
 ├── settings/            # 实验配置文件
 ├── virne/               # 核心环境、控制器、求解器和强化学习算法
-├── scripts/             # 实验运行脚本
+├── scripts/             # 拓扑快照生成脚本
 ├── TLE/                 # 卫星拓扑与快照生成相关代码
 └── datasets/            # 拓扑数据目录
 ```
@@ -99,22 +99,14 @@ MIP 示例：
 python main.py --config-name main_ch4 solver.solver_name=mip
 ```
 
-## 常用实验脚本
+## 拓扑快照生成
 
-仓库中的 `scripts/` 目录提供了部分批量实验脚本，例如：
-
-```bash
-powershell -ExecutionPolicy Bypass -File scripts/run_ch3_load_8_to_72_3alg.ps1
-powershell -ExecutionPolicy Bypass -File scripts/run_ch4_basic_lambda16_3alg.ps1
-powershell -ExecutionPolicy Bypass -File scripts/run_ch4_dominant_ratio_lambda16_200_4alg.ps1
-```
-
-运行前请根据本地路径和模型位置检查脚本中的参数，尤其是 Python 环境路径、预训练模型路径、SFC 数量、到达率、快照间隔和快照数量等设置。
+`scripts/generate_topology_snapshots.py` 可用于生成卫星网络拓扑快照。具体参数可根据实验星座规模、快照数量和快照间隔进行调整。
 
 ## 注意事项
 
-- 本仓库仅保留运行实验所需代码和配置，不包含实验结果和训练模型。
-- 若使用预训练模型测试 PPO 类算法，需要在命令或脚本中指定 `solver.pretrained_model_path`。
+- 本仓库仅保留运行实验所需核心代码和配置，不包含实验结果和训练模型。
+- 若使用预训练模型测试 PPO 类算法，需要在命令或配置中指定 `solver.pretrained_model_path`。
 - 若重新训练 PPO 类算法，可调整 `training.num_train_epochs` 等训练参数。
 - 运行 MIP 时可根据机器性能设置求解时间限制，例如 `solver.mip_time_limit_seconds`。
 
